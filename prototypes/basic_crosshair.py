@@ -1,7 +1,7 @@
 class OverlayElement:
     def update(self, event):
         pass
-    def draw(self, renderer):
+    def draw(self, canvas):
         pass
 
 class OverlayManager:
@@ -9,17 +9,13 @@ class OverlayManager:
         self.elements = []
     def add(self, element):
         self.elements.append(element)
-    def remove(self, element):
-        self.elements.remove(element)
-    def update_all(self, event):
+    def on_mouse_move(self, event):
         for element in self.elements:
             element.update(event)
-    def draw_all(self, renderer):
+    def draw_all(self, canvas):
         for element in self.elements:
-            element.draw(renderer)
+            element.draw(canvas)
 
 class CrosshairOverlay(OverlayElement):
-    pass
-
-class CoordinateOverlay(OverlayElement):
-    pass
+    def update(self, event):
+        pass
