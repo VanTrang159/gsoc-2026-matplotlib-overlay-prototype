@@ -25,8 +25,4 @@ Introduce a lightweight **overlay system**:
 - Each overlay maintains its own state and rendering logic
 
 This mimics a layered rendering model:
-Static Figure
-↑
-Overlay Layer(s) (Crosshair, Tooltip, Selection, ...)
-↑
-User Interaction
+Static Figure <-- Overlay Layer(s) (Crosshair, Tooltip, Selection, ...) <-- User Interaction
