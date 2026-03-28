@@ -19,3 +19,8 @@ class OverlayManager:
 class CrosshairOverlay(OverlayElement):
     def update(self, event):
         pass
+
+class TextOverlay(OverlayElement):
+    def __init__(self, ax):
+        pass
+
