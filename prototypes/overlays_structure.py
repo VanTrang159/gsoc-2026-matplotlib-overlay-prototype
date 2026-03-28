@@ -151,5 +151,5 @@ manager = OverlayManager(ax)
 manager.add('crosshair', CrosshairOverlay(ax, color='blue'))
 manager.add('text', TextOverlay(ax))
 
-print("Ấn 'c' để bật/tắt crosshair, 't' để bật/tắt text")
+print("Type 'c' to switch on/off crosshair, 't' to switch on/off text")
 plt.show()
