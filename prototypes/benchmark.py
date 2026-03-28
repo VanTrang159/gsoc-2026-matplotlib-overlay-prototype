@@ -14,7 +14,6 @@ from crosshair_blit import BlitCrosshair
 
 
 def main():
-    # Tăng lên 1 triệu điểm để ép CPU phải render nặng
     n_points = 1_000_000 
     x = np.linspace(0, 10, n_points)
     y = np.sin(x) + np.random.randn(n_points) * 0.1
