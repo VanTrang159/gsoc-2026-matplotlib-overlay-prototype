@@ -13,78 +13,28 @@ from crosshair_naive import NaiveCrosshair
 from crosshair_blit import BlitCrosshair
 
 
-class Timer:
-    def __init__(self, name):
-        self.name = name
-        self.times = []
-        self.updates = 0
-        self.full_redraws = 0
-
-    def record(self, duration_ms, full_redraw=False):
-        self.times.append(duration_ms)
-        self.updates += 1
-        if full_redraw:
-            self.full_redraws += 1
-
-    def avg_ms(self):
-        if not self.times:
-            return 0.0
-        return sum(self.times) / len(self.times)
-
-    def fps(self):
-        avg = self.avg_ms()
-        return 1000.0 / avg if avg > 0 else 0.0
-
-
-def attach_stats(fig, timers, interval=500):
-    text = fig.text(
-        0.5, 0.02, "",
-        ha="center",
-        va="bottom",
-        fontsize=9,
-        family="monospace",
-        bbox=dict(boxstyle="round,pad=0.4", facecolor="#f0f0f0", alpha=0.9)
-    )
-
-    def update(_):
-        lines = []
-        for name, timer in timers.items():
-            if timer.updates == 0:
-                lines.append(f"{name}: waiting...")
-            else:
-                lines.append(
-                    f"{name}: avg={timer.avg_ms():.3f} ms | "
-                    f"fps~{timer.fps():.1f} | "
-                    f"updates={timer.updates} | "
-                    f"full_redraws={timer.full_redraws}"
-                )
-        text.set_text("\n".join(lines))
-        fig.canvas.draw_idle()
-
-    return FuncAnimation(fig, update, interval=interval, cache_frame_data=False)
-
-
 def main():
-    x = np.linspace(0, 10, 1000)
-    y = np.sin(x) + 0.1 * np.random.randn(len(x))
+    # Tăng lên 1 triệu điểm để ép CPU phải render nặng
+    n_points = 1_000_000 
+    x = np.linspace(0, 10, n_points)
+    y = np.sin(x) + np.random.randn(n_points) * 0.1
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    fig.suptitle("Crosshair Benchmark: Naive vs Blit", fontsize=13)
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8), sharex='col')
+    fig.suptitle(f"Benchmark: {n_points:,} points with Shared Axes", fontsize=14)
 
-    for ax in axes:
-        ax.plot(x, y, color="steelblue", linewidth=1)
-        ax.set_xlabel("x")
-        ax.set_ylabel("y")
+    axes[0, 0].set_title("Naive (Full Redraw)")
+    axes[0, 0].plot(x, y, color='blue', lw=0.5)
+    axes[1, 0].plot(x, y, color='blue', lw=0.5)
 
-    axes[0].set_title("Naive Crosshair (draw_idle)")
-    axes[1].set_title("Blit Crosshair")
+    axes[0, 1].set_title("Blit (Overlay Layer)")
+    axes[0, 1].plot(x, y, color='green', lw=0.5)
+    axes[1, 1].plot(x, y, color='green', lw=0.5)
 
     naive_timer = Timer("Naive")
     blit_timer = Timer("Blit")
 
-    NaiveCrosshair(axes[0], timer=naive_timer)
-    BlitCrosshair(axes[1], timer=blit_timer)
-
+    NaiveCrosshair(axes[0, 0], timer=naive_timer)
+    BlitCrosshair(axes[0, 1], timer=blit_timer)
     anim = attach_stats(fig, {
         "Naive": naive_timer,
         "Blit": blit_timer,
